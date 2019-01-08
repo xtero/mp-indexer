@@ -3,6 +3,7 @@ import json
 import hashlib
 from zipfile import ZipFile
 from os import walk
+from os.path import getsize
 from pprint import pprint
 import argparse
 import sys
@@ -40,6 +41,7 @@ for (dirpath, dirnames, filenames) in walk( ARCHIVE_REPO ):
         with ZipFile( path, 'r' ) as zipf:
             definition = json.load( zipf.open('definition.json') )
             meta = definition['meta']
+            meta['filesize'] = getsize( path )
             meta['md5sum'] = md5sum( path )
             data.append( meta )
 
