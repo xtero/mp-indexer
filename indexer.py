@@ -4,8 +4,23 @@ import hashlib
 from zipfile import ZipFile
 from os import walk
 from pprint import pprint
+import argparse
+import sys
 
-ARCHIVE_REPO="../archiver/archives"
+OUTPUT=sys.stdout
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-i', '--input', help="Folder where the indexer will parser zip file", required=True)
+parser.add_argument('-o', '--output', help="Output of the script, by default, it will be stdout", default="")
+
+args = parser.parse_args()
+if args.output != "":
+    try: 
+        OUTPUT = open( args.output, "w" )
+    except (IOError) as e :
+        print("Error on opening file ")
+
+ARCHIVE_REPO = args.input
 
 data = []
 
@@ -27,5 +42,5 @@ for (dirpath, dirnames, filenames) in walk( ARCHIVE_REPO ):
             meta = definition['meta']
             meta['md5sum'] = md5sum( path )
             data.append( meta )
-with open("index.json", "w") as output:
-    json.dump(  data, output )
+
+json.dump(  data, OUTPUT )
